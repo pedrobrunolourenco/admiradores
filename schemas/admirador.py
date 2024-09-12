@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 from model.admirador import Admirador
 
 class AdmiradorAddSchema(BaseModel):
@@ -55,8 +55,10 @@ class ListagemAdmiradoresSchema(BaseModel):
 class AdmiradorGetAllSchema(BaseModel):
     """ faz busca paginada
     """
-    offset: str
-    limit: str
+    offset: Optional[str] = None
+    limit: Optional[str] = None
+    busca: Optional[str] = None
+
 
 class AdmiradoresGetPorIdSchema(BaseModel):
     """ faz busca por Id
@@ -95,7 +97,7 @@ def apresenta_admirador(sucesso: bool, admirador: Admirador):
     }
 
 
-def apresenta_admiradores(sucesso: bool, admiradores: List[Admirador]):
+def apresenta_admiradores(sucesso: bool, admiradores: List[Admirador], totalCount):
     """ Retorna uma representação de uma lista de admiradores
     """
     result = []
@@ -116,7 +118,8 @@ def apresenta_admiradores(sucesso: bool, admiradores: List[Admirador]):
 
     return { 
         "sucesso": sucesso,
-        "data": result
+        "data": result,
+        "totalCount": totalCount
     }
 
 def apresenta_remove(sucesso: bool, msg: str):
