@@ -46,6 +46,30 @@ class RetornoAdmiradorSchema(BaseModel):
     uf: str
     notavelId: int
 
+class AdmiradorTotais(BaseModel):
+    """ Define como uma listagem de Notaveis será apresentada
+    """
+    nome: str
+    count: int
+
+class AdmiradorTotaisIdade(BaseModel):
+    """ Define como uma listagem de Notaveis será apresentada
+    """
+    idade: str
+    count: int
+
+class ListaAdmiradorTotaisIdade(BaseModel):
+    """ Define como uma listagem de Notaveis será apresentada
+    """
+    notaveis:List[AdmiradorTotaisIdade]
+
+
+
+class ListaAdmiradorTotais(BaseModel):
+    """ Define como uma listagem de Notaveis será apresentada
+    """
+    notaveis:List[AdmiradorTotais]
+
 
 class ListagemAdmiradoresSchema(BaseModel):
     """ Define como uma listagem de Notaveis será apresentada

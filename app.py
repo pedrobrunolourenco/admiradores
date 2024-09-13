@@ -2,12 +2,13 @@ from venv import logger
 from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect
 from model.admirador import Admirador
-from schemas.admirador import AdmiradorAddSchema, AdmiradorGetAllSchema, AdmiradorUpdSchema, AdmiradoresGetPorIdSchema, AdmiradoresGetPorNomeSchema, ListagemAdmiradoresSchema, RetornoAdmiradorSchema, RetornoRemoveSchema, apresenta_admirador, apresenta_admiradores, apresenta_remove
+from schemas.admirador import AdmiradorAddSchema, AdmiradorGetAllSchema, AdmiradorUpdSchema, AdmiradoresGetPorIdSchema, AdmiradoresGetPorNomeSchema, ListaAdmiradorTotais, ListaAdmiradorTotaisIdade, ListagemAdmiradoresSchema, RetornoAdmiradorSchema, RetornoRemoveSchema, apresenta_admirador, apresenta_admiradores, apresenta_remove
 from schemas.error import ErrorSchema
 from model import Session
 from flask_cors import CORS
 from sqlalchemy import update
 from sqlalchemy.orm import aliased
+from sqlalchemy import func
 
 info = Info(title="API Admiradores - Sprint-03", version="1.0.0")
 app = OpenAPI(__name__, info=info)
@@ -19,6 +20,73 @@ admirador_tag = Tag(name="Admirador", description="Adição, Edição, visualiza
 def home():
     return redirect('/openapi')
 
+@app.get('/top_admiradores_uf', tags=[admirador_tag],
+          responses={"200": ListaAdmiradorTotais, "409": ErrorSchema, "400": ErrorSchema})
+def get_top_admiradores_uf():
+    """Obtém os 6 admiradores com mais registros agrupados por uf"""
+    try:
+        session = Session()
+        
+        subquery = session.query(
+            Admirador.uf,
+            func.count().label('count')
+        ).group_by(Admirador.uf).subquery()
+        
+        # Consulta principal para pegar os 6 uf com mais registros
+        top6_admiradores = session.query(
+            subquery.c.uf,
+            subquery.c.count
+        ).order_by(subquery.c.count.desc()).limit(6).all()
+        
+        # Preparar o resultado
+        result = []
+        for uf, count in top6_admiradores:
+            result.append({
+                "uf": uf,
+                "count": count
+            })
+
+        return {"sucesso": True, "data": result}, 200
+
+    except Exception as e:
+        error_msg = "Não foi possível obter os top 6 admiradores :/"
+        logger.warning(f"Erro ao listar os top 6 admiradores {error_msg}, erro: {e}")
+        return {"sucesso": False, "message": error_msg}, 400
+    
+@app.get('/top_admiradores_idade', tags=[admirador_tag],
+          responses={"200": ListaAdmiradorTotaisIdade, "409": ErrorSchema, "400": ErrorSchema})
+def get_top_admiradores_idade():
+    """Obtém os 6 admiradores com mais registros agrupados por idade"""
+    try:
+        session = Session()
+        
+        subquery = session.query(
+            Admirador.idade,
+            func.count().label('count')
+        ).group_by(Admirador.idade).subquery()
+        
+        # Consulta principal para pegar os 6 uf com mais registros
+        top6_admiradores = session.query(
+            subquery.c.idade,
+            subquery.c.count
+        ).order_by(subquery.c.count.desc()).limit(6).all()
+        
+        # Preparar o resultado
+        result = []
+        for idade, count in top6_admiradores:
+            result.append({
+                "idade": idade,
+                "count": count
+            })
+
+        return {"sucesso": True, "data": result}, 200
+
+    except Exception as e:
+        error_msg = "Não foi possível obter os top 6 admiradores :/"
+        logger.warning(f"Erro ao listar os top 6 admiradores {error_msg}, erro: {e}")
+        return {"sucesso": False, "message": error_msg}, 400
+
+    
 @app.post('/create', tags=[admirador_tag],
           responses={"200": RetornoAdmiradorSchema, "409": ErrorSchema, "400": ErrorSchema})
 def add_admirador(body: AdmiradorAddSchema):

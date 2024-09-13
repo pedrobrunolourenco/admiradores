@@ -10,6 +10,8 @@ COPY . .
 
 EXPOSE 8383
 
+VOLUME ["/app/database"]
+
 CMD ["flask", "run", "--host=0.0.0.0","--port=8383"]
 
 
