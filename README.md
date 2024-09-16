@@ -1,11 +1,11 @@
 # Componente - Api-Admiradores
- MicroService para Cruid de admiradores
+ MicroService para CRUD de admiradores
 
 ## 1. Objetivo
 Post, Put, Gets e Delete de Admiradores
 
 ## 3. Referência Técnica
-- Esta API foi desenvolvida em **Phyton** faz uso do seu próprio **Dockerfile** e de seu próprio Repositório em **SQLLite**, ORM **Sqlalchemy**, o banco com sua respectiva tabela será gerado automaticamente;
+- Esta API foi desenvolvida em **Phyton** faz uso do seu próprio **Dockerfile** e de seu próprio Repositório em **SQLLite**, ORM **Sqlalchemy**, o banco com sua respectiva tabela será gerado automaticamente.
 
 ## 4. Subindo o componente Api-Admiradores
 ### 4.1
