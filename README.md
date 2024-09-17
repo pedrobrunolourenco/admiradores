@@ -13,6 +13,6 @@ Post, Put, Gets e Delete de Admiradores
 ### 4.3 - Executar os comandos abaixo
    ```sh
    docker build -t api-admiradores .
-   docker run -d -p 8383:8383 api-admiradores
+   docker run -d -v admiradores_volume:/app/database -p 8383:8383 api-admiradores
    ```
 - Feito isso a documentação do componente **Api-Admiradores** é disponibilizada em `localhost:8383`.
